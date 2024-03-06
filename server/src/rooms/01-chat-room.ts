@@ -24,5 +24,4 @@ export class ChatRoom extends Room {
     onDispose () {
         console.log("Dispose ChatRoom");
     }
-
 }

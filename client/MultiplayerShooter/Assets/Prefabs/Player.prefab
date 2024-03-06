@@ -11,6 +11,7 @@ GameObject:
   - component: {fileID: 1731350441749447941}
   - component: {fileID: 4267817218812125065}
   - component: {fileID: 2472193208963157697}
+  - component: {fileID: 7541252391807098469}
   m_Layer: 0
   m_Name: Player
   m_TagString: Untagged
@@ -59,6 +60,33 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 3aea7a6c85a072f40991d99911ba76c8, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+--- !u!54 &7541252391807098469
+Rigidbody:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2036517279166608910}
+  serializedVersion: 4
+  m_Mass: 1
+  m_Drag: 0
+  m_AngularDrag: 0.05
+  m_CenterOfMass: {x: 0, y: 0, z: 0}
+  m_InertiaTensor: {x: 1, y: 1, z: 1}
+  m_InertiaRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ImplicitCom: 1
+  m_ImplicitTensor: 1
+  m_UseGravity: 1
+  m_IsKinematic: 0
+  m_Interpolate: 0
+  m_Constraints: 80
+  m_CollisionDetection: 0
 --- !u!1 &9050891711361944035
 GameObject:
   m_ObjectHideFlags: 0
@@ -70,7 +98,7 @@ GameObject:
   - component: {fileID: 1850932397690984199}
   - component: {fileID: 2831926577863040428}
   - component: {fileID: 27859514005638960}
-  - component: {fileID: 6690132173792319246}
+  - component: {fileID: 2298656490095168237}
   m_Layer: 0
   m_Name: Cube
   m_TagString: Untagged
@@ -143,14 +171,14 @@ MeshRenderer:
   m_SortingLayer: 0
   m_SortingOrder: 0
   m_AdditionalVertexStreams: {fileID: 0}
---- !u!65 &6690132173792319246
-BoxCollider:
+--- !u!135 &2298656490095168237
+SphereCollider:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 9050891711361944035}
-  m_Material: {fileID: 0}
+  m_Material: {fileID: 13400000, guid: 9b568bd0aa7e44a46a9ec1bb33ebf169, type: 2}
   m_IncludeLayers:
     serializedVersion: 2
     m_Bits: 0
@@ -162,5 +190,5 @@ BoxCollider:
   m_ProvidesContacts: 0
   m_Enabled: 1
   serializedVersion: 3
-  m_Size: {x: 1, y: 1, z: 1}
+  m_Radius: 0.5
   m_Center: {x: 0, y: 0, z: 0}

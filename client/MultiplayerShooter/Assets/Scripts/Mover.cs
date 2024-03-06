@@ -1,12 +1,19 @@
 using UnityEngine;
 
+[RequireComponent(typeof(Rigidbody))]
 public class Mover : MonoBehaviour
 {
     [SerializeField] private float _speed = 3f;
 
+    private Rigidbody _rigidbody;
     private Vector3 _direction;
 
-    private void Update()
+    private void Awake()
+    {
+        _rigidbody = GetComponent<Rigidbody>();
+    }
+
+    private void FixedUpdate()
     {
         Move();
     }
@@ -16,13 +23,15 @@ public class Mover : MonoBehaviour
         _direction = direction;
     }
 
-    public void GetMoveInfo(out Vector3 position)
+    public void GetMoveInfo(out Vector3 position, out Vector3 velocity)
     {
         position = transform.position;
+        velocity = _rigidbody.velocity;
     }
 
     private void Move()
     {
-        transform.position += _direction * Time.deltaTime * _speed;
+        Vector3 velocity = transform.TransformVector(_direction);
+        _rigidbody.velocity = new Vector3(velocity.x, _rigidbody.velocity.y, velocity.z) * _speed;
     }
 }
