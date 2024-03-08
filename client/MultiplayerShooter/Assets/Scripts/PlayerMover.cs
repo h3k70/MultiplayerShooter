@@ -3,8 +3,9 @@ using UnityEngine;
 [RequireComponent(typeof(Rigidbody))]
 public class PlayerMover : MonoBehaviour
 {
-    [SerializeField] private float _speed = 3f;
-    [SerializeField] private float _jumpForce = 5f;
+    [SerializeField] private float _speed = 5f;
+    [SerializeField] private float _jumpForce = 7f;
+    [SerializeField] private float _gravityModifier = 0.2f;
     [SerializeField] private Transform _head;
     [SerializeField] private Transform _cameraPoint;
     [SerializeField] private float _maxHeadAngle = 80;
@@ -32,6 +33,7 @@ public class PlayerMover : MonoBehaviour
     {
         Move();
         RotateX();
+        Gravity();
     }
 
     private void Update()
@@ -59,7 +61,7 @@ public class PlayerMover : MonoBehaviour
     {
         if (_isGrounded)
         {
-            _rigidbody.AddForce(0, _jumpForce, 0, ForceMode.VelocityChange);
+            _rigidbody.velocity = new Vector3(_rigidbody.velocity.x, _jumpForce, _rigidbody.velocity.z);
             _isGrounded = false;
         }
     }
@@ -101,5 +103,10 @@ public class PlayerMover : MonoBehaviour
     {
         _rigidbody.angularVelocity = new Vector3(0, _directionLook.x, 0);
         _directionLook.x = 0;
+    }
+
+    private void Gravity()
+    {
+        _rigidbody.AddForce(0, -_gravityModifier, 0, ForceMode.VelocityChange);
     }
 }

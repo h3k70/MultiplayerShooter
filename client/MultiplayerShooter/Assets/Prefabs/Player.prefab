@@ -48,9 +48,13 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 8cc6a6d64d1c62948883dd6815b15bb3, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _speed: 9
+  _speed: 6
+  _jumpForce: 7
+  _gravityModifier: 0.2
   _head: {fileID: 1850932397690984199}
   _cameraPoint: {fileID: 5869841263522641751}
+  _maxHeadAngle: 80
+  _minHeadAngle: -80
 --- !u!114 &2472193208963157697
 MonoBehaviour:
   m_ObjectHideFlags: 0
