@@ -22,6 +22,7 @@ public class PlayerController : MonoBehaviour
         _playerInput.Player.Move.performed += OnMove;
         _playerInput.Player.Look.performed += OnLook;
         _playerInput.Player.Look.canceled += OnLookStop;
+        _playerInput.Player.Jump.performed += OnJump;
     }
 
     private void OnEnable()
@@ -41,6 +42,11 @@ public class PlayerController : MonoBehaviour
         _playerInput.Disable();
     }
 
+    private void OnMove(InputAction.CallbackContext context)
+    {
+        _direction = context.action.ReadValue<Vector3>();
+    }
+
     private void OnLook(InputAction.CallbackContext context)
     {
         _look = context.action.ReadValue<Vector2>();
@@ -51,9 +57,9 @@ public class PlayerController : MonoBehaviour
         _look = Vector2.zero;
     }
 
-    private void OnMove(InputAction.CallbackContext context)
+    private void OnJump(InputAction.CallbackContext context)
     {
-        _direction = context.action.ReadValue<Vector3>();
+        _mover.Jump();
     }
 
     private void SendMove()

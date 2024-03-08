@@ -4,6 +4,7 @@ using UnityEngine;
 public class PlayerMover : MonoBehaviour
 {
     [SerializeField] private float _speed = 3f;
+    [SerializeField] private float _jumpForce = 5f;
     [SerializeField] private Transform _head;
     [SerializeField] private Transform _cameraPoint;
     [SerializeField] private float _maxHeadAngle = 80;
@@ -14,6 +15,7 @@ public class PlayerMover : MonoBehaviour
     private Vector3 _directionMove;
     private Vector2 _directionLook;
     private float _currentRotateY;
+    private bool _isGrounded;
 
     private void Awake()
     {
@@ -37,6 +39,11 @@ public class PlayerMover : MonoBehaviour
         RotateY();
     }
 
+    private void OnCollisionStay(Collision collision)
+    {
+        _isGrounded = true;
+    }
+
     public void SetMoveInput(Vector3 direction)
     {
         _directionMove = direction;
@@ -46,6 +53,15 @@ public class PlayerMover : MonoBehaviour
     {
         _directionLook.y = direction.y;
         _directionLook.x += direction.x;
+    }
+
+    public void Jump()
+    {
+        if (_isGrounded)
+        {
+            _rigidbody.AddForce(0, _jumpForce, 0, ForceMode.VelocityChange);
+            _isGrounded = false;
+        }
     }
 
     public void GetMoveInfo(out Vector3 position, out Vector3 velocity)
@@ -70,8 +86,9 @@ public class PlayerMover : MonoBehaviour
 
     private void Move()
     {
-        Vector3 velocity = transform.TransformVector(_directionMove);
-        _rigidbody.velocity = new Vector3(velocity.x, _rigidbody.velocity.y, velocity.z) * _speed;
+        Vector3 velocity = transform.TransformVector(_directionMove) * _speed;
+        velocity.y = _rigidbody.velocity.y;
+        _rigidbody.velocity = velocity;
     }
 
     private void RotateY()
