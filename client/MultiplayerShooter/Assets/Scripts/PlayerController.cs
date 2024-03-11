@@ -7,12 +7,15 @@ using UnityEngine.InputSystem;
 [RequireComponent(typeof(PlayerMover))]
 public class PlayerController : MonoBehaviour
 {
-    [SerializeField] float _sensetivity = 3f;
+    [SerializeField] float _sensetivity = 1f;
 
     private PlayerInput _playerInput;
     private Vector3 _direction;
     private Vector2 _look;
     private PlayerMover _mover;
+    private bool _isMenuOpen;
+
+    public float Sensetivity => _sensetivity;
 
     private void Awake()
     {
@@ -23,6 +26,13 @@ public class PlayerController : MonoBehaviour
         _playerInput.Player.Look.performed += OnLook;
         _playerInput.Player.Look.canceled += OnLookStop;
         _playerInput.Player.Jump.performed += OnJump;
+
+        _playerInput.Player.Menu.performed += OnMenu;
+    }
+
+    private void Start()
+    {
+        EnableMotion();
     }
 
     private void OnEnable()
@@ -42,6 +52,11 @@ public class PlayerController : MonoBehaviour
         _playerInput.Disable();
     }
 
+    public void SetSensetivity(float value)
+    {
+        _sensetivity = value;
+    }
+
     private void OnMove(InputAction.CallbackContext context)
     {
         _direction = context.action.ReadValue<Vector3>();
@@ -50,6 +65,7 @@ public class PlayerController : MonoBehaviour
     private void OnLook(InputAction.CallbackContext context)
     {
         _look = context.action.ReadValue<Vector2>();
+        _look *= _sensetivity;
     }
 
     private void OnLookStop(InputAction.CallbackContext context)
@@ -60,6 +76,40 @@ public class PlayerController : MonoBehaviour
     private void OnJump(InputAction.CallbackContext context)
     {
         _mover.Jump();
+    }
+
+    private void OnMenu(InputAction.CallbackContext obj)
+    {
+        _isMenuOpen = _isMenuOpen ? false : true;
+
+        if (_isMenuOpen)
+            DisableMotion();
+        else
+            EnableMotion();
+    }
+
+    private void DisableMotion()
+    {
+        _mover.enabled = false;
+        ShowCursor();
+    }
+
+    private void EnableMotion()
+    {
+        _mover.enabled = true;
+        HideCursor();
+    }
+
+    private void HideCursor()
+    {
+        Cursor.lockState = CursorLockMode.Locked;
+        Cursor.visible = false;
+    }
+
+    private void ShowCursor()
+    {
+        Cursor.lockState = CursorLockMode.None;
+        Cursor.visible = true;
     }
 
     private void SendMove()

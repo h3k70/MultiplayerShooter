@@ -6,16 +6,18 @@ public class PlayerMover : MonoBehaviour
     [SerializeField] private float _speed = 5f;
     [SerializeField] private float _jumpForce = 7f;
     [SerializeField] private float _gravityModifier = 0.2f;
-    [SerializeField] private Transform _head;
     [SerializeField] private Transform _cameraPoint;
+    [SerializeField] private Transform[] _rotateWithCamera;
     [SerializeField] private float _maxHeadAngle = 80;
     [SerializeField] private float _minHeadAngle = -80;
+    [SerializeField] private float _angleForJump = 0.50f;
 
     private Transform _camera;
     private Rigidbody _rigidbody;
     private Vector3 _directionMove;
     private Vector2 _directionLook;
     private float _currentRotateY;
+    private float _lastRotateY;
     private bool _isGrounded;
 
     private void Awake()
@@ -26,7 +28,6 @@ public class PlayerMover : MonoBehaviour
     private void Start()
     {
         CameraCaptor();
-        HideCursor();
     }
 
     private void FixedUpdate()
@@ -41,9 +42,24 @@ public class PlayerMover : MonoBehaviour
         RotateY();
     }
 
+    private void OnDisable()
+    {
+        _directionLook.x = 0;
+        RotateX();
+    }
+
     private void OnCollisionStay(Collision collision)
     {
-        _isGrounded = true;
+        var contactPoints = collision.contacts;
+        for (int i = 0; i < contactPoints.Length; i++)
+        {
+            if (contactPoints[i].normal.y > _angleForJump) _isGrounded = true;
+        }
+    }
+
+    private void OnCollisionExit(Collision collision)
+    {
+        _isGrounded = false;
     }
 
     public void SetMoveInput(Vector3 direction)
@@ -80,12 +96,6 @@ public class PlayerMover : MonoBehaviour
         _camera.localRotation = Quaternion.identity;
     }
 
-    private void HideCursor()
-    {
-        Cursor.lockState = CursorLockMode.Locked;
-        Cursor.visible = false;
-    }
-
     private void Move()
     {
         Vector3 velocity = transform.TransformVector(_directionMove) * _speed;
@@ -95,8 +105,14 @@ public class PlayerMover : MonoBehaviour
 
     private void RotateY()
     {
+        _lastRotateY = _currentRotateY;
         _currentRotateY = Mathf.Clamp(_currentRotateY + _directionLook.y, _minHeadAngle, _maxHeadAngle);
-        _head.localEulerAngles = new Vector3(_currentRotateY, 0, 0);
+        _cameraPoint.localEulerAngles = new Vector3(_currentRotateY, 0, 0);
+
+        foreach (var item in _rotateWithCamera)
+        {
+            item.RotateAround(_cameraPoint.position, _cameraPoint.right, _currentRotateY - _lastRotateY);
+        }
     }
 
     private void RotateX()
