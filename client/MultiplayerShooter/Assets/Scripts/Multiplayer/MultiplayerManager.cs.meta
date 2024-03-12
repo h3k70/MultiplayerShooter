@@ -6,7 +6,7 @@ MonoImporter:
   defaultReferences:
   - _colyseusSettings: {fileID: 11400000, guid: 0e5d2977adad46d4a86e5473099bb525,
       type: 2}
-  - _player: {fileID: 2036517279166608910, guid: c1b462d4afce60a4d9f65f94660de712,
+  - _player: {fileID: 4267817218812125065, guid: c1b462d4afce60a4d9f65f94660de712,
       type: 3}
   - _enemy: {fileID: 8408901495718722154, guid: f4026dc8e6d6989468af255c5c193d57,
       type: 3}

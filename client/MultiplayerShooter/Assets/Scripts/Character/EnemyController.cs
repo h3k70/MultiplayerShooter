@@ -7,6 +7,7 @@ using UnityEngine;
 [RequireComponent(typeof(EnemyMover))]
 public class EnemyController : MonoBehaviour
 {
+    private Player _player;
     private EnemyMover _mover;
     private Vector3 _velocity = Vector3.zero;
     private Vector3 _position;
@@ -35,6 +36,19 @@ public class EnemyController : MonoBehaviour
     private void Start()
     {
         _position = transform.position;
+    }
+
+    public void Init(Player player)
+    {
+        _player = player;
+        _mover.SetSpeed(player.speed);
+        player.OnChange += OnChange;
+    }
+
+    public void Destroy()
+    {
+        _player.OnChange -= OnChange;
+        Destroy(gameObject);
     }
 
     private void SaveReceiveTime()
@@ -71,6 +85,12 @@ public class EnemyController : MonoBehaviour
                     break;
                 case "vZ":
                     _velocity.z = (float)dataChange.Value;
+                    break;
+                case "rX":
+                    _mover.SetRotateX((float)dataChange.Value);
+                    break;
+                case "rY":
+                    _mover.SetRotateY((float)dataChange.Value);
                     break;
                 default:
                     Debug.LogWarning($"Не обрабатывается изменение поля - {dataChange.Field}");

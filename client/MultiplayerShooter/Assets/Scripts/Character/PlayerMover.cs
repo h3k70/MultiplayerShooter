@@ -1,28 +1,28 @@
 using UnityEngine;
 
 [RequireComponent(typeof(Rigidbody))]
-public class PlayerMover : MonoBehaviour
+[RequireComponent(typeof(CheckGrounded))]
+public class PlayerMover : Mover
 {
-    [SerializeField] private float _speed = 5f;
     [SerializeField] private float _jumpForce = 7f;
     [SerializeField] private float _gravityModifier = 0.2f;
     [SerializeField] private Transform _cameraPoint;
     [SerializeField] private Transform[] _rotateWithCamera;
     [SerializeField] private float _maxHeadAngle = 80;
     [SerializeField] private float _minHeadAngle = -80;
-    [SerializeField] private float _angleForJump = 0.50f;
 
     private Transform _camera;
     private Rigidbody _rigidbody;
+    private CheckGrounded _checkGrounded;
     private Vector3 _directionMove;
     private Vector2 _directionLook;
     private float _currentRotateY;
     private float _lastRotateY;
-    private bool _isGrounded;
 
     private void Awake()
     {
         _rigidbody = GetComponent<Rigidbody>();
+        _checkGrounded = GetComponent<CheckGrounded>();
     }
 
     private void Start()
@@ -48,20 +48,6 @@ public class PlayerMover : MonoBehaviour
         RotateX();
     }
 
-    private void OnCollisionStay(Collision collision)
-    {
-        var contactPoints = collision.contacts;
-        for (int i = 0; i < contactPoints.Length; i++)
-        {
-            if (contactPoints[i].normal.y > _angleForJump) _isGrounded = true;
-        }
-    }
-
-    private void OnCollisionExit(Collision collision)
-    {
-        _isGrounded = false;
-    }
-
     public void SetMoveInput(Vector3 direction)
     {
         _directionMove = direction;
@@ -75,17 +61,19 @@ public class PlayerMover : MonoBehaviour
 
     public void Jump()
     {
-        if (_isGrounded)
+        if (_checkGrounded.IsGrounded && enabled == true)
         {
             _rigidbody.velocity = new Vector3(_rigidbody.velocity.x, _jumpForce, _rigidbody.velocity.z);
-            _isGrounded = false;
+            //_checkGrounded.SetGrounded(false);
         }
     }
 
-    public void GetMoveInfo(out Vector3 position, out Vector3 velocity)
+    public void GetMoveInfo(out Vector3 position, out Vector3 velocity, out float rotateX, out float rotateY)
     {
         position = transform.position;
         velocity = _rigidbody.velocity;
+        rotateX = transform.localEulerAngles.y;
+        rotateY = _cameraPoint.localEulerAngles.x;
     }
 
     private void CameraCaptor()
@@ -98,9 +86,10 @@ public class PlayerMover : MonoBehaviour
 
     private void Move()
     {
-        Vector3 velocity = transform.TransformVector(_directionMove) * _speed;
+        Vector3 velocity = transform.TransformVector(_directionMove) * Speed;
         velocity.y = _rigidbody.velocity.y;
-        _rigidbody.velocity = velocity;
+        Velocity = velocity;
+        _rigidbody.velocity = Velocity;
     }
 
     private void RotateY()
