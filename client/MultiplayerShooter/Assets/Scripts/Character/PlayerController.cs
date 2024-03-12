@@ -8,17 +8,22 @@ using UnityEngine.InputSystem;
 public class PlayerController : MonoBehaviour
 {
     [SerializeField] float _sensetivity = 1f;
+    [SerializeField] Hand _hand;
 
+    private MultiplayerManager _multiplayerManager;
     private PlayerInput _playerInput;
     private Vector3 _direction;
     private Vector2 _look;
     private PlayerMover _mover;
     private bool _isMenuOpen;
+    private Coroutine _fireJob;
 
     public float Sensetivity => _sensetivity;
 
     private void Awake()
     {
+        _multiplayerManager = MultiplayerManager.Instance;
+
         _mover = GetComponent<PlayerMover>();
 
         _playerInput = new PlayerInput();
@@ -26,6 +31,9 @@ public class PlayerController : MonoBehaviour
         _playerInput.Player.Look.performed += OnLook;
         _playerInput.Player.Look.canceled += OnLookStop;
         _playerInput.Player.Jump.performed += OnJump;
+
+        _playerInput.Player.Fire.performed += OnStartFire;
+        _playerInput.Player.Fire.canceled += OnStopFire;
 
         _playerInput.Player.Menu.performed += OnMenu;
     }
@@ -78,6 +86,16 @@ public class PlayerController : MonoBehaviour
         _mover.Jump();
     }
 
+    private void OnStartFire(InputAction.CallbackContext obj)
+    {
+        _fireJob = StartCoroutine(Fire());
+    }
+
+    private void OnStopFire(InputAction.CallbackContext obj)
+    {
+        StopCoroutine(_fireJob);
+    }
+
     private void OnMenu(InputAction.CallbackContext obj)
     {
         _isMenuOpen = _isMenuOpen ? false : true;
@@ -90,14 +108,16 @@ public class PlayerController : MonoBehaviour
 
     private void DisableMotion()
     {
-        _mover.enabled = false;
         ShowCursor();
+        _hand.enabled = false;
+        _mover.enabled = false;
     }
 
     private void EnableMotion()
     {
-        _mover.enabled = true;
         HideCursor();
+        _hand.enabled = true;
+        _mover.enabled = true;
     }
 
     private void HideCursor()
@@ -129,6 +149,37 @@ public class PlayerController : MonoBehaviour
             { "rX", rotateX },
             { "rY", rotateY }
         };
-        MultiplayerManager.Instance.SendMessage("move", data);
+        _multiplayerManager.SendMessage("move", data);
     }
+
+    private void SendShoot(ShootInfo info)
+    {
+        info.key = _multiplayerManager.GetClientKey();
+        string json = JsonUtility.ToJson(info);
+        _multiplayerManager.SendMessage("shoot", json);
+    }
+
+    private IEnumerator Fire()
+    {
+        while (true)
+        {
+            if(_hand.TryUse())
+                SendShoot(_hand.GetShootInfo());
+            yield return null;
+        }
+    }
+}
+
+[System.Serializable]
+public struct ShootInfo
+{
+    public string key;
+
+    public float pX;
+    public float pY;
+    public float pZ;
+
+    public float dX;
+    public float dY;
+    public float dZ;
 }

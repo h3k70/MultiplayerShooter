@@ -4,28 +4,34 @@ using UnityEngine;
 
 public class CheckGrounded : MonoBehaviour
 {
-    [SerializeField] private float _angleForJump = 0.50f;
+    [SerializeField] private LayerMask _layerMask;
+    [SerializeField] private float _radius = 0.30f;
 
     private bool _isGrounded;
 
     public bool IsGrounded => _isGrounded;
 
-    private void OnCollisionStay(Collision collision)
+    private void Update()
     {
-        var contactPoints = collision.contacts;
-        for (int i = 0; i < contactPoints.Length; i++)
+        if (Physics.CheckSphere(transform.position, _radius, _layerMask))
         {
-            if (contactPoints[i].normal.y > _angleForJump) _isGrounded = true;
+            _isGrounded = true;
         }
-    }
-
-    private void OnCollisionExit(Collision collision)
-    {
-        _isGrounded = false;
+        else
+        {
+            _isGrounded = false;
+        }
     }
 
     public void SetGrounded(bool value)
     {
         _isGrounded = value;
     }
+
+#if UNITY_EDITOR
+    private void OnDrawGizmos()
+    {
+        Gizmos.DrawWireSphere(transform.position, _radius);
+    }
+#endif
 }

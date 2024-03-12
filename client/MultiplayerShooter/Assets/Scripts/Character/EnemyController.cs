@@ -5,8 +5,10 @@ using System.Collections.Generic;
 using UnityEngine;
 
 [RequireComponent(typeof(EnemyMover))]
+[RequireComponent(typeof(EnemyGun))]
 public class EnemyController : MonoBehaviour
 {
+    private EnemyGun _enemyGun;
     private Player _player;
     private EnemyMover _mover;
     private Vector3 _velocity = Vector3.zero;
@@ -31,6 +33,7 @@ public class EnemyController : MonoBehaviour
     private void Awake()
     {
         _mover = GetComponent<EnemyMover>();
+        _enemyGun = GetComponent<EnemyGun>();
     }
 
     private void Start()
@@ -43,6 +46,14 @@ public class EnemyController : MonoBehaviour
         _player = player;
         _mover.SetSpeed(player.speed);
         player.OnChange += OnChange;
+    }
+
+    public void Shoot(in ShootInfo info)
+    {
+        Vector3 position = new Vector3(info.pX, info.pY, info.pZ);
+        Vector3 velocity = new Vector3(info.dX, info.dY, info.dZ);
+
+        _enemyGun.Shoot(position, velocity);
     }
 
     public void Destroy()
