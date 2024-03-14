@@ -13,7 +13,7 @@ public class EnemyMover : Mover
         _targetPosition = transform.position;
     }
 
-    private void Update()
+    private void LateUpdate()
     {
         if(_velocityMagnitude > _minVelocityMagnitude)
         {
@@ -22,7 +22,7 @@ public class EnemyMover : Mover
         }
         else
         {
-            transform.position = _targetPosition;
+            transform.position = Vector3.MoveTowards(transform.position, _targetPosition, Speed * Time.deltaTime);
         }
     }
 
