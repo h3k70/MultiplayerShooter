@@ -128,7 +128,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 0d84723feea54ee4e82ecda6c073c366, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _fireDelay: 0.15
+  _fireDelay: 0.1
   _bullet: {fileID: 6293773911034473438, guid: 3c66e70a68aa6cf4f99f8804acfbe0d8, type: 3}
   _firePoint: {fileID: 352996910190186977}
-  _bulletSpeed: 20
+  _bulletSpeed: 40

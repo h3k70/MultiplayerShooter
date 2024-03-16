@@ -98,10 +98,10 @@ public class EnemyController : MonoBehaviour
                     _velocity.z = (float)dataChange.Value;
                     break;
                 case "rX":
-                    _mover.SetRotateX((float)dataChange.Value);
+                    _mover.SetRotateX((float)dataChange.Value, AverageInterval);
                     break;
                 case "rY":
-                    _mover.SetRotateY((float)dataChange.Value);
+                    _mover.SetRotateY((float)dataChange.Value, AverageInterval);
                     break;
                 default:
                     Debug.LogWarning($"Не обрабатывается изменение поля - {dataChange.Field}");
